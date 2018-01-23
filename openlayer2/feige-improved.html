@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" href="theme/default/style.css" />
+    <script type="text/javascript" src="OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            var options = { "controls": [] };
+            map = new OpenLayers.Map("map", options);
+            var wms = new OpenLayers.Layer.WMS("openlayer",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                { "layers": "basic" });
+
+            // 加载底图
+            map.addLayer(wms);
+            
+            // 初始化空间
+            map.addControl(new OpenLayers.Control.ZoomPanel());
+            map.addControl(new OpenLayers.Control.Navigation());
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+            // 创建feature
+            var features = new Array(50);
+            for (var i = 0; i < 50; i++){
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point((360 * Math.random()) - 180, (180 * Math.random()) - 90),
+                    { "type": 5 + parseInt(Math.random() * 5) });
+            }
+
+            // 创建地图符号化
+            var myStyles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    pointRadius: "${type}",
+                    /*fillColor: "#ffcc66",
+                    strokeColor: "#ff9933",*/
+                    fillColor: "black",
+                    fillOpacity:0.5,
+                    strokeColor: "red",
+                    strokeWith: 2,
+                    graphicZIndex:1
+                }),
+                "select": new OpenLayers.Style({
+                    fillColor: "#66ccff",
+                    strokeColor: "#3399ff",
+                    graphicZIndex: 2
+                })
+            });
+
+            // 创建图层，并添加feature
+            var points = new OpenLayers.Layer.Vector("Points", {
+                styleMap: myStyles,
+                rendererOptions: { zIndexing: true }
+            });
+            points.addFeatures(features);
+            map.addLayer(points);
+            // 加载要素图层
+           
+                 
+                  var feature2 = new OpenLayers.Feature.Vector(
+                        OpenLayers.Geometry.fromWKT(
+                            "POLYGON((122.1196057858059 40.3999217503462,122.1039099730055 40.4053103885698,122.0882108154106 40.3859156311119,122.0792685342245 40.3635564960064,122.0378990085138 40.3277850692260,122.0278402741739 40.3098998512132,122.0177798519857 40.2808339830179,122.0087709387810 40.2760928396788,122.0359277099829 40.2454114393053,122.0633502969788 40.2048173481389,122.0852574518657 40.1839758623663,122.1138968162987 40.1722033546914,122.1408078217272 40.1699802679055,122.1591848675602 40.1583141037649,122.1729103821095 40.1566048766851,122.1838186520000 40.1610937657035,122.1873232115441 40.1878192020287,122.2228554353872 40.1859195569952,122.2502560500863 40.1948549308155, 122.2499007955826 40.2012074964701,122.2428712446733 40.2078403852465,122.2316268212112 40.2107768553914,122.2115749481227 40.2258967881423,122.2112181027867 40.2330439604712,122.2323018948294 40.2533796243890, 122.2575830093690 40.2636364406080,122.2639025357271 40.2567353654018,122.2824885152032 40.2611666270749,122.3021071768760 40.2724633267510,122.3217199632499 40.2752854658672,122.3327103410453 40.2741009136462,122.3455447501720 40.2614138734234,122.3599068394145 40.2589698948880,122.3620076763269 40.2610763320169,122.3556963003865 40.2671911128520,122.3493737046409 40.2931516437258,122.3616305884568 40.3010341267760,122.3640810842020 40.3073755181104,122.3532153652708 40.3111255336516,122.3325540767636 40.3096327836969,122.3178402620117 40.3134058862325,122.3003324520956 40.3073999380660,122.2901654741328 40.3137953189443,122.2638745739487 40.3019859672221,122.2526383789852 40.3070459068751,122.2417464454779 40.3211007203115,122.2269840382866 40.3282767665886,122.2150287455368 40.3272376144861,122.2083293969585 40.3537080321886,122.1864340083109 40.3546437255205,122.1743032575248 40.3707305293763,122.1362926929121 40.3942028122594,122.1196057858059 40.3999217503462))"
+                                
+                        )
+                                                                  
+                    );
+                     
+                  var Area = new OpenLayers.Layer.Vector("Area", {
+                      styleMap:myStyles,
+                      rendererOptions: {zIndexing: true},
+                   
+                  });
+                  Area.addFeatures(feature2);
+                 
+                  map.addLayer(Area);
+
+            // 添加选择要素工具
+            var select = new OpenLayers.Control.SelectFeature(points, { hover: true });
+            map.addControl(select);
+            select.activate();
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+            //map.zoomToMaxExtent();
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="map" style="width:500px;height:400px"></div>
+</body>
+</html>

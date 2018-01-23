@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+ <html lang='zh-cn'>
+ <head>
+     <meta charset='utf-8' />
+     <title>My OpenLayers Map</title>
+      <script type='text/javascript' src='OpenLayers.js'></script>
+      <script type='text/javascript'>
+        function mapviewInit(){
+
+          var map = new OpenLayers.Map('map', 
+            {maxResolution:0.703125,allOverlays: true}
+          );
+          var bou = new OpenLayers.Layer.Vector("KML", {
+            styleMap: new OpenLayers.StyleMap({
+              pointRadius: 3,
+              fillColor: "#ffcc66",
+              strokeColor: "#ff9933",
+              strokeWidth: 2
+            }),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.HTTP({
+              url: "kml/bou2_4l.kml",
+              format: new OpenLayers.Format.KML({
+                extractStyles: false, 
+                extractAttributes: false,
+                maxDepth: 2
+              })
+            })
+          });
+          map.addLayer(bou);
+          map.setCenter(new OpenLayers.LonLat(112,36),8,false,true);
+        }
+     </script>
+ </head>
+ <body onload='mapviewInit();'>
+     <div id='map' style='width: 800px; height: 600px;'>
+      </div>
+ </body>
+ </html>

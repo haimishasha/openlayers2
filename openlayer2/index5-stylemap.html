@@ -1,0 +1,72 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" href="theme/default/style.css" />
+    <script type="text/javascript" src="OpenLayers.js"></script>
+    <script type="text/javascript">
+        var map;
+        function init(){
+            var options = { "controls": [] };
+            map = new OpenLayers.Map("map", options);
+            var wms = new OpenLayers.Layer.WMS("openlayer",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                { "layers": "basic" });
+
+            // 加载底图
+            map.addLayer(wms);
+            
+            // 初始化空间
+            map.addControl(new OpenLayers.Control.ZoomPanel());
+            map.addControl(new OpenLayers.Control.Navigation());
+            map.addControl(new OpenLayers.Control.MousePosition());
+
+            // 创建feature
+            var features = new Array(50);
+            for (var i = 0; i < 50; i++){
+                features[i] = new OpenLayers.Feature.Vector(
+                    new OpenLayers.Geometry.Point((360 * Math.random()) - 180, (180 * Math.random()) - 90),
+                    { "type": 5 + parseInt(Math.random() * 5) });
+            }
+
+            // 创建地图符号化
+            var myStyles = new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                    pointRadius: "${type}",
+                    /*fillColor: "#ffcc66",
+                    strokeColor: "#ff9933",*/
+                    fillColor: "black",
+                    strokeColor: "red",
+                    strokeWith: 2,
+                    graphicZIndex:1
+                }),
+                "select": new OpenLayers.Style({
+                    fillColor: "#66ccff",
+                    strokeColor: "#3399ff",
+                    graphicZIndex: 2
+                })
+            });
+
+            // 创建图层，并添加feature
+            var points = new OpenLayers.Layer.Vector("Points", {
+                styleMap: myStyles,
+                rendererOptions: { zIndexing: true }
+            });
+            points.addFeatures(features);
+
+            // 加载要素图层
+            map.addLayer(points);
+
+            // 添加选择要素工具
+            var select = new OpenLayers.Control.SelectFeature(points, { hover: true });
+            map.addControl(select);
+            select.activate();
+            map.setCenter(new OpenLayers.LonLat(0, 0), 1);
+            //map.zoomToMaxExtent();
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="map" style="width:500px;height:400px"></div>
+</body>
+</html>

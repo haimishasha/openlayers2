@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> Google Map </TITLE>
+  <link rel="stylesheet" href=".theme/default/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script src="OpenLayers.js"></script>
+  <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+  <script  type="text/javascript">
+    
+    var map = null;
+    function init()
+    {
+        //创建map对象，
+        map = new OpenLayers.Map("map");
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        
+        //创建google Map图层对象
+        var gphy = new OpenLayers.Layer.Google(
+            "Google Physical",                      //Google Map Physical图层
+            {type: G_PHYSICAL_MAP}
+        );
+        var gmap = new OpenLayers.Layer.Google(
+            "Google Streets",                       //Google Map Streets图层
+            {numZoomLevels: 20}                     //设置Google Map的zoom级别
+        );
+        var ghyb = new OpenLayers.Layer.Google(
+            "Google Hybrid",                        //Google Physical图层
+            {type: G_HYBRID_MAP, numZoomLevels: 20}
+        );
+        var gsat = new OpenLayers.Layer.Google(
+            "Google Satellite",                     //Google Map Satellite图层
+            {type: G_SATELLITE_MAP, numZoomLevels: 22}
+        );
+
+        // 添加图层
+        map.addLayers([gphy, gmap, ghyb, gsat]);
+        // 放大到全屏
+        map.zoomToMaxExtent();
+    }
+  </script>
+
+ </HEAD>
+
+ <BODY onload="init()">
+  <div id="map" class="smallmap"></div>
+ </BODY>
+</HTML>
